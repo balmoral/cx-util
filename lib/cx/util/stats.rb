@@ -17,9 +17,9 @@ module CX
     def initialize(enum, offset: 0, sample: true, &select_block)
       @sample = sample
       @count = 0
-      @sum = 0.to_d
-      @min = Float::MAX.to_d
-      @max = Float::MIN.to_d
+      @sum = 0.0
+      @min = Float::MAX
+      @max = Float::MIN
       @ave = @sd = @var = nil
       no_select = select_block.nil?
       iterate(enum, offset) do |v,i|
@@ -50,12 +50,11 @@ module CX
 
     def iterate(enum, offset)
       enum.each_with_index do |e, i|
-        yield e, i unless i < offset
+        yield(e, i) unless i < offset
       end
     end
 
-    def process(_val)
-      val = _val.to_d
+    def process(val)
       @count += 1
       @sum += val
       @min = val if val < @min
@@ -66,7 +65,7 @@ module CX
       if @count < 2
         0
       else
-        v = 0.to_d
+        v = 0.0
         nil_block = select_block.nil?
         iterate(enum, offset) do |e,i|
           v += (e - @ave).squared if nil_block || yield(e, i)

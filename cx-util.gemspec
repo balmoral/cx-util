@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
                     lib/cx/util/id.rb
                     lib/cx/util/key.rb
                     lib/cx/util/keyed.rb
+                    lib/cx/util/line_fit.rb
                     lib/cx/util/math.rb
                     lib/cx/util/notifier.rb
                     lib/cx/util/observable.rb
