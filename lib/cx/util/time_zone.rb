@@ -2,8 +2,6 @@ require 'date'
 require 'tzinfo'
 require 'cx/core'
 
-# TODO: ?? move to cx/util
-
 module TimeZone
 
   def yahoo_exchange_timezones
