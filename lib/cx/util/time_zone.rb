@@ -59,7 +59,7 @@ module TimeZone
   end
 
   def hhmm_to_minutes(hhmm)
-    h, m = hhmm.split(':')
+    h, m = hhmm.split(':').map(&:to_i)
     (h * 60) + (h < 0 ? -m : m)
   end
 
