@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
                     lib/cx/util/stack.rb
                     lib/cx/util/stats.rb
                     lib/cx/util/thread.rb
+                    lib/cx/util/time_zone.rb
                     lib/cx/util/timer.rb
                     lib/cx/util/trace.rb
                     lib/cx/util/csv/constants.rb
