@@ -1,4 +1,4 @@
-require 'cx-core'
+require 'cx/core'
 require 'bigdecimal/util'
 require 'bigdecimal'
 

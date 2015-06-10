@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.authors     = ['CG']
   s.email       = 'cojogu@gmail.com'
   s.files       = %w(
+                    lib/cx/util.rb
                     lib/cx/util/calc.rb
                     lib/cx/util/code_name.rb
                     lib/cx/util/debug.rb
@@ -17,6 +18,7 @@ Gem::Specification.new do |s|
                     lib/cx/util/math.rb
                     lib/cx/util/notifier.rb
                     lib/cx/util/observable.rb
+                    lib/cx/util/open_table.rb
                     lib/cx/util/platform.rb
                     lib/cx/util/random.rb
                     lib/cx/util/sort.rb
