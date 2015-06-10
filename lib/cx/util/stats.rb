@@ -3,7 +3,10 @@ module CX
   class Stats
     include Math
 
-    attr_reader :sum, :min, :max, :count, :ave, :var, :sd
+    attr_reader :sum, :min, :max, :count, :ave, :var, :dev
+    attr_reader :dev_pos, :dev_neg
+    attr_reader :var_pos, :var_neg
+    attr_reader :n_pos, :n_neg
 
     # Will create an instance of stats from an enumerable.
     # If a select_block is given, this will be called
@@ -12,17 +15,21 @@ module CX
     # A first_index and a final_index may also be given.
     # For non-array enumerables a counter will be used as
     # surrogate for array indexing.
-    def initialize(enum, first_index: nil, final_index: nil, sample: true, &select_block)
+    def initialize(enum, first_index: nil, final_index: nil, sample: false, &select_block)
       @sample = sample
       @count = 0
       @sum = 0.0
       @min = Float::MAX
       @max = Float::MIN
-      @ave = @sd = @var = nil
+      @ave = @dev = @var = 0.0
+      @dev_pos = @dev_neg = @var_pos = @var_neg = 0.0
+      @n_pos = @n_neg = 0
       iterate(enum, first_index, final_index, :process, &select_block)
       @ave = @count == 0 ? 0 : @sum / @count
       calc_var(enum, first_index, final_index, &select_block)
-      @sd = sqrt(@var)
+      @dev = sqrt(@var)
+      @dev_pos = sqrt(@var_pos)
+      @dev_neg = sqrt(@var_neg)
     end
 
     def sample?
@@ -33,9 +40,12 @@ module CX
       !@sample
     end
 
-    def dev
-      @sd
-    end
+    alias sd dev
+    alias sd_pos dev_pos
+    alias sd_neg dev_neg
+    alias sdev dev
+    alias pos_count n_pos
+    alias neg_count n_neg
 
     def annual_ror(years)
       Math::annual_ror(0, @sum, years)
@@ -68,21 +78,33 @@ module CX
     end
 
     def calc_var(enum, first_index, final_index, &select_block)
-      @var = 0
       if @count > 1
         iterate(enum, first_index, final_index, :process_var, &select_block)
-        @var /= (@count - (@sample ? 1 : 0)).to_f
+        n = (@count - (@sample ? 1 : 0)).to_f
+        @var /= n
+        @var_pos /= @n_pos.to_f if @n_pos != 0
+        @var_neg /= @n_neg.to_f if @n_neg != 0
       end
     end
 
     def process_var(val)
-      @var += (val - @ave).squared
+      delta = val - @ave
+      delta2 = delta.squared
+      @var += delta2
+      if delta >= 0.0
+        @var_pos += delta2
+        @n_pos += 1
+      end
+      if delta <= 0.0
+        @var_neg += delta2
+        @n_neg += 1
+      end
     end
   end
 end
 
 module Enumerable
-  def stats(first_index: nil, final_index: nil, sample: true, &select_block)
+  def stats(first_index: nil, final_index: nil, sample: false, &select_block)
     CX::Stats.new(self, first_index: first_index, final_index: final_index, sample: sample, &select_block)
   end
 end
