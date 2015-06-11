@@ -1,4 +1,4 @@
-require 'cx/util/thread'
+# require 'cx/util/thread'
 
 module CX
   class FilePath
