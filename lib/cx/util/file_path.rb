@@ -59,13 +59,11 @@ module CX
     end
 
     def assure_existence
-      sync {
-        unless exist?
-          parent.assure_existence
-          Dir.mkdir(@path)
-        end
-        self
-      }
+      unless exist?
+        parent.assure_existence
+        Dir.mkdir(@path)
+      end
+      self
     end
 
     # Assumes receiver is path to file name.
