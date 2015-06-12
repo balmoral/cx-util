@@ -11,7 +11,17 @@ module CX
 
     def initialize(*names)
       @path = @directory = nil
-      concat(*names) if names
+      if names
+        first = names.first
+        case first
+          when '.', './'
+            pwd = Dir.getwd.split('/')[1..-1]
+            _names = pwd + names[1..-1]
+            concat(*_names)
+          else
+            concat(*names)
+        end
+      end
     end
 
     def separator
