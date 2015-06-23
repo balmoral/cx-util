@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
                     lib/cx/util.rb
                     lib/cx/util/calc.rb
                     lib/cx/util/code_name.rb
+                    lib/cx/util/counter.rb
                     lib/cx/util/debug.rb
                     lib/cx/util/file_path.rb
-                    lib/cx/util/id.rb
                     lib/cx/util/key.rb
                     lib/cx/util/keyed.rb
                     lib/cx/util/line_fit.rb
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
                     lib/cx/util/sort.rb
                     lib/cx/util/stack.rb
                     lib/cx/util/stats.rb
+                    lib/cx/util/stub.rb
                     lib/cx/util/thread.rb
                     lib/cx/util/time_zone.rb
                     lib/cx/util/timer.rb

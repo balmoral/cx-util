@@ -10,4 +10,8 @@ class Object
   def opal?
     platform == 'opal'
   end
+
+  def osx?
+    (platform =~ /x86_64-darwin14/) != nil
+  end
 end

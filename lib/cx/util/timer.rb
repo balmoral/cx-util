@@ -3,8 +3,9 @@ module CX
 
     attr_reader :start_time
 
-    def initialize
-      @start_time = @finish_time = nil
+    def initialize(&block)
+      @start_time = @finish_time = Time.now
+      time(&block) if block
     end
 
     def start
@@ -21,6 +22,7 @@ module CX
       start
       yield
       finish
+      self
     end
 
     def seconds
@@ -48,6 +50,9 @@ module CX
       end
     end
 
+    def self.time(&block)
+      new &block
+    end
   end
 end
     
