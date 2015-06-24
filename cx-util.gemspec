@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
                     lib/cx/util/math.rb
                     lib/cx/util/notifier.rb
                     lib/cx/util/observable.rb
-                    lib/cx/util/open_table.rb
                     lib/cx/util/platform.rb
                     lib/cx/util/random.rb
                     lib/cx/util/sort.rb
