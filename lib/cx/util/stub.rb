@@ -1,29 +1,6 @@
-# Example:
-#
-# class BarStub < Stub
-#   field :symbol
-#   field :date
-#   field :open
-#   field :high
-#   field :low
-#   field :close
-#   field :volume
-#   field :trends
-# end
-#
-#
 
 # A Stubbed class/object can proxy to
-# embedded stub. For example
-#
-#   class Contact
-#     extend  Stubbed
-#     stub    ContactStub
-#     ...
-#     def initialize(stub)
-#       @stub = stub
-#     end
-#   end
+# an embedded stub. For example
 #
 #   class ContactStub
 #     field :name
@@ -31,6 +8,14 @@
 #     field :phone
 #     ...
 #   end
+#
+#   class Contact
+#     extend  Stubbed
+#     stub    ContactStub
+#   end
+#
+#   stub = ContactStub.new
+#   contact = Contact.new(stub)
 #
 # So now instances of Contact will behave
 # just like ContactSub, but without using
@@ -71,6 +56,7 @@ module Stubbed
       raise "Stubbed.stub(#{stub_class.name}) : already stubbed to #{@stub_class.name}"
     end
     @stub_class = stub_class
+    # add class methods from stub to stubbed
     current_methods = methods
     @stub_class.methods.each do |method|
       # NB don't override 'naturally occurring' or otherwise pre-defined class methods
@@ -83,7 +69,9 @@ module Stubbed
         end
       end
     end
+    # include the StubWrap module in the Stubbed class
     include(StubWrap)
+    # add instance methods from stub to stubbed
     current_methods = public_instance_methods
     @stub_class.public_instance_methods.each do |method|
       # NB don't override 'naturally occurring' or otherwise pre-defined instance methods
@@ -99,6 +87,19 @@ module Stubbed
   end
 end
 
+# Example:
+#
+# class BarStub < Stub
+#   field :symbol
+#   field :date
+#   field :open
+#   field :high
+#   field :low
+#   field :close
+#   field :volume
+#   field :trends
+# end
+#
 class Stub
   # When class is defined such as
   #   class MyStub
