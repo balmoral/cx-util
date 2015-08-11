@@ -1,5 +1,3 @@
-require 'cx/util/debug'
-
 # Random encapsulates random number generation.
 # Integer and boolean focus.
 # Lots of useful collection stuff.
@@ -19,17 +17,14 @@ module CX
     # A seed may be provided to allow determined sequence of random numbers.
     # If no seed is given the sequence of random numbers will be undetermined.
     def initialize(seed = nil)
-      @generator = seed ? Random.new(seed) : Random.new
+      @generator = seed ? ::Random.new(seed) : ::Random.new
     end
 
     attr_reader :generator
 
     # Returns a random integer greater than or equal to 0 and less than limit.
     def int(limit)
-      assert limit.is_a?(Integer), 'expected integer argument'
-      sync { i = @generator.rand limit }
-      assert i.is_a?(Integer), 'expected integer from rand'
-      i
+      @generator.rand limit.to_i
     end
 
     # Returns the given array after shuffling its contents in-line
@@ -73,6 +68,14 @@ module CX
     # Returns true or false chosen randomly.
     def truth?
       int(2) == 0
+    end
+
+    def heads?
+      truth?
+    end
+
+    def tails?
+      !heads?
     end
 
     # Returns true with probability of 1/n, false with probability (n-1)/n.

@@ -1,6 +1,6 @@
+require 'cx/core'
 require 'date'
 require 'tzinfo'
-require 'cx/core'
 
 module TimeZone
 

@@ -82,8 +82,8 @@ module CX
         iterate(enum, first_index, final_index, :process_var, &select_block)
         n = (@count - (@sample ? 1 : 0)).to_f
         @var /= n
-        @var_pos /= @n_pos.to_f if @n_pos != 0
-        @var_neg /= @n_neg.to_f if @n_neg != 0
+        @var_pos /= n # @n_pos.to_f if @n_pos != 0
+        @var_neg /= n # @n_neg.to_f if @n_neg != 0
       end
     end
 

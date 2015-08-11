@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
                     lib/cx/util/counter.rb
                     lib/cx/util/debug.rb
                     lib/cx/util/file_path.rb
+                    lib/cx/util/item.rb
                     lib/cx/util/key.rb
                     lib/cx/util/keyed.rb
                     lib/cx/util/line_fit.rb
@@ -28,11 +29,9 @@ Gem::Specification.new do |s|
                     lib/cx/util/time_zone.rb
                     lib/cx/util/timer.rb
                     lib/cx/util/trace.rb
-                    lib/cx/util/csv/constants.rb
                     lib/cx/util/csv/field.rb
                     lib/cx/util/csv/reader.rb
-                    lib/cx/util/csv/row.rb
-                    lib/cx/util/csv/table.rb
+                    lib/cx/util/csv/spec.rb
                   )
   s.homepage    = 'http://rubygems.org/gems/cx-util' # TODO: push to rubygems ??
   s.license     = 'MIT'

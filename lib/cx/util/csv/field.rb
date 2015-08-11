@@ -1,21 +1,45 @@
 require 'bigdecimal'
-require 'cx/util/csv/constants'
+require 'cx/core/constants'
+
+# TODO: needs refactoring
 
 module CX
   module CSV
     module Field
+
+      module_function
+
+      # supported types are:
+      #
+      #   :array
+      #   :hash
+      #   :date
+      #   :time
+      #   :time_of_day
+      #   :null
+      #   :float
+      #   :decimal
+      #   :boolean
+      #   :string
+      #   :symbol
+      #
+      def klass(type)
+        # wonderful world of Ruby - get a class from its name
+        Module.const_get("CX::CSV::Field::#{type.to_s.camel_case}")
+      end
+
+      def new(sym: nil, name: nil, type: nil, **opts)
+        klass(type).new(sym: sym, name: name, **opts)
+      end
+
       class Base
-        attr_reader :name
-        attr_reader :quote
-        attr_reader :read_accessor
-        attr_reader :write_accessor
+        attr_reader :sym, :name, :quote
 
 
-        def initialize(name: nil, quote: nil, read: nil, write: nil)
+        def initialize(sym: nil, name: nil, quote: nil)
+          @sym = sym
           @name = name || 'anon'
           @quote = quote
-          @read_accessor = read ? read : name_to_accessor
-          @write_accessor = write ? write : name_to_accessor('=')
         end
 
         def value_from_s(value)
@@ -27,64 +51,60 @@ module CX
         end
 
         def set_single_quoted
-          @quote = CSV::SINGLE_QUOTE
+          @quote = QUOTE_SINGLE
         end
 
         def set_double_quoted
-          @quote = CSV::DOUBLE_QUOTE
+          @quote = QUOTE_DOUBLE
         end
 
-        def is_hash_field
+        def hash?
           false
         end
 
-        def is_array_field
+        def array?
           false
         end
 
-        def is_string_field
+        def string?
           false
         end
 
-        def is_symbol_field
+        def symbol?
           false
         end
 
-        def is_date_field
+        def date?
           false
         end
 
-        def is_time_field
+        def time?
           false
         end
 
-        def is_time_of_day_field
+        def time_of_day?
           false
         end
 
-        def is_null_field
+        def null?
           false
         end
 
-        def is_not_null_field
-         true
-        end
-
-        def is_number_field
+        def number?
           false
         end
 
-        def is_boolean_field
+        def boolean?
           false
         end
 
-        # Returns converted value of next field in CVS.
+        # Returns converted value of next field in CSV.
         def read_csv(io)
           quoted = false
           str = ''
           io.each_char do |ch|
             case
-              when (ch == CSV::COMMA && !quoted) || ch == CSV::LF || ch == CSV::CR || ch.nil?
+              when (ch == COMMA && !quoted) || ch == LF || ch == CR || ch.nil?
                 break
               when ch == quote
                 quoted = !quoted
@@ -95,13 +115,6 @@ module CX
           str.empty? ? nil : value_from_s(str)
         end
 
-        private
-
-        def name_to_accessor(postfix = nil)
-          result = name.downcase.gsub(/ /, '_').gsub(/-/, '_')
-          result << postfix if postfix
-          result.to_sym
-        end
       end
 
       # embedded subclasses
@@ -109,12 +122,12 @@ module CX
       class Array < Base
         attr_reader :value_field
 
-        def initialize(name: nil, value: nil)
-          super(name: name, quote: CSV::SINGLE_QUOTE)
+        def initialize(sym: nil, name: nil, value: nil)
+          super(sym: sym, name: name, quote: QUOTE_SINGLE)
           @value_field = value
         end
 
-        def is_array_field
+        def array?
           true
         end
 
@@ -132,7 +145,7 @@ module CX
           str = ''
           str << quote
           ary.each_with_index do |e, i|
-            str << CSV::COMMA if i > 0
+            str << COMMA if i > 0
             str << value_field.value_to_s(e)
           end
           str << quote
@@ -144,13 +157,13 @@ module CX
         attr_reader :value_field
         attr_reader :key_field
 
-        def initialize(name: nil, key: nil, value: nil)
-          super(name, CSV::SINGLE_QUOTE)
+        def initialize(sym: nil, name: nil, key: nil, value: nil)
+          super(sym: sym, name: name, quote: QUOTE_SINGLE)
           @value_field = value
           @key_field = key
         end
 
-        def is_hash_field
+        def hash?
           true
         end
 
@@ -170,9 +183,9 @@ module CX
           str << quote
           i = 0
           hash.each_pair do |k, v|
-            str << CSV::COMMA if i > 0
+            str << COMMA if i > 0
             str << key_field.value_to_s(k)
-            str << CSV::COMMA
+            str << COMMA
             str << value_field.value_to_s(v)
             i += 1
           end
@@ -185,12 +198,12 @@ module CX
         attr_reader :format
 
         # Time.strftime formats - defaults to '%Y%m%d'
-        def initialize(name: nil, format: '%Y%m%d', quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, format: '%Y%m%d', quote: nil)
+          super(sym: sym, name: name, quote: quote)
           @format = format
         end
 
-        def is_date_field
+        def date?
           true
         end
 
@@ -207,12 +220,12 @@ module CX
         attr_reader :format
 
         # Time.strftime for formats - defaults to '%Y%m%d%H%M%S'
-        def initialize(name: nil, format: '%Y%m%d%H%M%S', quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, format: '%Y%m%d%H%M%S', quote: nil)
+          super(sym: sym, name: name, quote: quote)
           @format = format
         end
 
-        def is_time_field
+        def time?
           true
         end
 
@@ -229,14 +242,14 @@ module CX
         # NB - this treats time as the second in the day, not Ruby Time
         # Default format is '%d:%d:%d'
         # TODO: make a lot smarter ? H:M:S or h:m:s or h:m or HS ...
-        def initialize(name: nil, format: '%d:%d:%d', quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, format: '%d:%d:%d', quote: nil)
+          super(sym: sym, name: name, quote: quote)
           @format = format
         end
 
         attr_reader :format
 
-        def is_time_of_day_field
+        def time_of_day?
           true
         end
 
@@ -261,7 +274,7 @@ module CX
       end
 
       class Null < Base
-        def is_null_field
+        def null?
           true
         end
 
@@ -271,9 +284,9 @@ module CX
       end
 
       class Float < Base
-        def initialize(name: nil, quote: nil, precision: 6)
+        def initialize(sym: nil, name: nil, quote: nil, precision: 6)
           @precision = precision
-          super(name: name, quote: quote)
+          super(sym: sym, name: name, quote: quote)
         end
 
         def precision
@@ -284,7 +297,7 @@ module CX
           @precision = i
         end
 
-        def is_number_field
+        def number?
           true
         end
 
@@ -298,9 +311,9 @@ module CX
       end
 
       class Decimal < Base
-        def initialize(name: nil, quote: nil, precision: 6)
+        def initialize(sym: nil, name: nil, quote: nil, precision: 6)
           @precision = precision
-          super(name: name, quote: quote)
+          super(sym: sym, name: name, quote: quote)
         end
 
         def precision
@@ -311,7 +324,7 @@ module CX
           @precision = i
         end
 
-        def is_number_field
+        def number?
           true
         end
 
@@ -325,11 +338,11 @@ module CX
       end
 
       class Integer < Base
-        def initialize(name: nil, quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, quote: nil)
+          super(sym: sym, name: name, quote: quote)
         end
 
-        def is_number_field
+        def number?
           true
         end
 
@@ -339,11 +352,11 @@ module CX
       end
 
       class Boolean < Base
-        def initialize(name: nil, quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, quote: nil)
+          super(sym: sym, name: name, quote: quote)
         end
 
-        def is_boolean_field
+        def boolean?
           true
         end
 
@@ -357,11 +370,11 @@ module CX
       end
 
       class String < Base
-        def initialize(name: nil, quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, quote: nil)
+          super(sym: sym, name: name, quote: quote)
         end
 
-        def is_string_field
+        def string?
           true
         end
 
@@ -371,11 +384,11 @@ module CX
       end
 
       class Symbol < Base
-        def initialize(name: nil, quote: nil)
-          super(name: name, quote: quote)
+        def initialize(sym: nil, name: nil, quote: nil)
+          super(sym: sym, name: name, quote: quote)
         end
 
-        def is_symbol_field
+        def symbol?
           true
         end
 

@@ -12,6 +12,9 @@ module CX
     def initialize(*names)
       @path = @directory = nil
       if names
+        if names.size == 1
+          names = names.split('/')
+        end
         first = names.first
         case first
           when '.', './'
