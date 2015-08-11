@@ -36,5 +36,6 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://rubygems.org/gems/cx-util' # TODO: push to rubygems ??
   s.license     = 'MIT'
 
+  s.add_dependency(%q<tzinfo>)
   s.add_dependency(%q<cx-core>)
 end
