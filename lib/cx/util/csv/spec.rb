@@ -61,12 +61,12 @@ module CX
          field_names.to_csv
       end
   
-      # may be overriden
+      # may be overridden
       def self.header_rows
         1
       end
   
-      # may be overriden
+      # may be overridden
       def self.field_mappings
         nil
       end

@@ -18,6 +18,7 @@ module CX
       #   :time_of_day
       #   :null
       #   :float
+      #   :integer
       #   :decimal
       #   :boolean
       #   :string
