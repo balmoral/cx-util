@@ -9,7 +9,7 @@ module CX
     #     ...
     #   end
     #
-    # opts not used for now...
+    # TODO: opts not used for now...
     def self.field(_field_name, opts = {})
       # puts "#{self.class.name}##{__method__}(#{_name})"
       field_name = _field_name.to_sym
@@ -101,10 +101,6 @@ module CX
     end
   end
 
-  #
-  # TODO: needs a lott more thought and work
-  # TODO: allow mutiple embeds like multiple inheritance
-  #
   # A Stubbed class/object can proxy to
   # an embedded stub. For example
   #
@@ -135,7 +131,9 @@ module CX
   # stuff, we are avoiding use of it
   # (for now...)
   #
-
+  # TODO: needs a lot more thought and work
+  # TODO: allow multiple embeds like multiple inheritance
+  #
   module EmbeddedStub
     def initialize(stub = nil)
       @stub = stub
@@ -206,7 +204,6 @@ module CX
   #   field :trends
   # end
   #
-
 
 end
 

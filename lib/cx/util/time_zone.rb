@@ -4,6 +4,7 @@ require 'tzinfo'
 
 module TimeZone
 
+  # TODO: move yahoo and domain data elsewhere
   def yahoo_exchange_timezones
     @yahoo_exchange_timezones ||= {
       CCY:  'Europe/London',    # currency
