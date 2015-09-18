@@ -74,7 +74,7 @@ module CX
             # must read value to soak up io, even if field not mapped
             value = read_field(io, fields[source_field_index])
             unless mapped_field_index < num_fields
-              cx_error __method__,  'mapped_field_index >= num_fields'
+              raise RuntimeError,  "mapped_field_index #{mapped_field_index} >= num_fields #{num_fields}"
             end
             row[mapped_field_index] = value unless mapped_field_index < 0
           end
