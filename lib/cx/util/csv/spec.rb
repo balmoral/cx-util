@@ -60,15 +60,18 @@ module CX
       def self.csv_head
          field_names.to_csv
       end
-  
+
       # may be overridden
+      def self.params
+        {}
+      end
+
       def self.header_rows
-        1
+        params[:header_rows] || 1
       end
   
-      # may be overridden
       def self.field_mappings
-        nil
+        params[:field_mappings]
       end
   
       def self.reader
@@ -88,7 +91,7 @@ module CX
       end
 
       def self.rows_from_stream(io)
-        reader.read_stream(io, **csv_read_args)
+        reader.read_stream(io)
       end
 
       # RUBY MAGIC WARNING
