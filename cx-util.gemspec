@@ -3,7 +3,7 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'cx/util/version'
 
-Gem::Specification.new do |s|
+Gem::Specification.new do |spec|
   spec.name          = 'cx-util'
   spec.version       = CX::Util::VERSION
   spec.date          = '2015-04-26'
