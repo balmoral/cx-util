@@ -1,4 +1,5 @@
 require 'cx/util/csv/field'
+require 'cx/util/csv/reader'
 require 'cx/util/stub'
 
 # Example:
