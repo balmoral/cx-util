@@ -1,40 +1,22 @@
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'cx/util/version'
+
 Gem::Specification.new do |s|
-  s.name        = 'cx-util'
-  s.version     = '1.0.0'
-  s.date        = '2015-04-26'
-  s.summary     = 'CX utility classes'
-  s.authors     = ['CG']
-  s.email       = 'cojogu@gmail.com'
-  s.files       = %w(
-                    lib/cx/util.rb
-                    lib/cx/util/calc.rb
-                    lib/cx/util/code_name.rb
-                    lib/cx/util/counter.rb
-                    lib/cx/util/debug.rb
-                    lib/cx/util/file_path.rb
-                    lib/cx/util/item.rb
-                    lib/cx/util/key.rb
-                    lib/cx/util/keyed.rb
-                    lib/cx/util/line_fit.rb
-                    lib/cx/util/math.rb
-                    lib/cx/util/notifier.rb
-                    lib/cx/util/observable.rb
-                    lib/cx/util/platform.rb
-                    lib/cx/util/random.rb
-                    lib/cx/util/sort.rb
-                    lib/cx/util/stack.rb
-                    lib/cx/util/stats.rb
-                    lib/cx/util/stub.rb
-                    lib/cx/util/thread.rb
-                    lib/cx/util/time_zone.rb
-                    lib/cx/util/timer.rb
-                    lib/cx/util/trace.rb
-                    lib/cx/util/csv/field.rb
-                    lib/cx/util/csv/reader.rb
-                    lib/cx/util/csv/spec.rb
-                  )
-  s.homepage    = 'http://rubygems.org/gems/cx-util' # TODO: push to rubygems ??
-  s.license     = 'MIT'
+  s.name          = 'cx-util'
+  s.version       = CX::Util::VERSION
+  s.date          = '2015-04-26'
+  s.summary       = 'CX utility classes'
+  s.authors       = ['Colin Gunn']
+  s.email         = 'colgunn@icloud.com'
+  s.homepage      = 'http://rubygems.org/gems/cx-util' # TODO: push to rubygems ??
+  s.license       = 'MIT'
+
+  s.files         = `git ls-files -z`.split("\x0")
+  s.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  s.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  s.require_paths = ['lib']
 
   s.add_dependency(%q<tzinfo>)
   s.add_dependency(%q<cx-core>)
