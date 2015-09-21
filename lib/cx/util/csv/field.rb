@@ -344,18 +344,18 @@ module CX
 
             when '%H%M%S'
               ->(v) { v }
-            when '%H:%M%:%S'
+            when '%H:%M:%S'
               ->(v) { v.gsub(/:/, '') }
-            when '%H-%M%-%S'
+            when '%H-%M-%S'
               ->(v) { v.gsub(/-/, '') }
-            when '%H/%M%/%S'
+            when '%H/%M/%S'
               ->(v) { v.gsub(/\//, '') }
 
-            when '%h:%m%:%s'
+            when '%h:%m:%s'
               ->(v) { hhmmss(v, ':') }
-            when '%h-%m%-%s'
+            when '%h-%m-%s'
               ->(v) { hhmmss(v, '-') }
-            when '%h/%m%/%s'
+            when '%h/%m/%s'
               ->(v) { hhmmss(v, '/') }
 
             else
