@@ -15,11 +15,26 @@ require 'cx/util/stub'
 #   field :volume, :integer
 # end
 #
+# or for dates and time of day as  strings:
+#
+# class TickData < CX::CSV::Spec
+#   field :symbol, :string
+#   field :date,   :yyyymmdd,  format: '%Y-%m-%d'
+#   field :time,   :hhmmss,    format: '%H:%M:%S'
+#   field :open,   :float
+#   field :high,   :float
+#   field :low,    :float
+#   field :close,  :float
+#   field :volume, :integer
+# end
+#
 # supported types are:
 #
 #   :array
 #   :hash
 #   :date
+#   :yyyymmdd
+#   :hhmmss
 #   :time
 #   :time_of_day
 #   :null

@@ -1,5 +1,8 @@
 require 'bigdecimal'
 require 'cx/core/constants'
+require 'cx/core/date'
+require 'cx/core/time'
+require 'cx/core/time_of_day'
 
 # TODO: needs refactoring
 
@@ -217,6 +220,59 @@ module CX
         end
       end
 
+      class Yyyymmdd < Base
+        attr_reader :format
+
+        # Time.strftime formats - defaults to '%Y%m%d'
+        def initialize(sym: nil, name: nil, format: '%Y%m%d', quote: nil)
+          super(sym: sym, name: name, quote: quote)
+          @format = format
+          @value_proc = case @format
+
+            when '%Y%m%d'
+              ->(v) { v }
+            when '%d%m%Y'
+              ->(v) { "#{v[4,4]}#{v[2,2]}#{v[0,2]}" }
+            when '%m%d%Y'
+              ->(v) { "#{v[4,4]}#{v[0,2]}#{v[2,2]}" }
+
+            when '%Y-%m-%d'
+              ->(v) { v.gsub(/-/,'') }
+            when '%Y/%m/%d'
+              ->(v) { v.gsub(/\//,'') }
+            when '%Y:%m:%d'
+              ->(v) { v.gsub(/:/,'') }
+
+            when '%d-%m-%Y'
+              ->(v) { d,m,y = v.split('-'); "#{y}#{m}#{d}" }
+            when '%d/%m/%Y'
+              ->(v) { d,m,y = v.split('/'); "#{y}#{m}#{d}" }
+            when '%d:%m:%Y'
+              ->(v) { d,m,y = v.split(':'); "#{y}#{m}#{d}" }
+            when '%d/%m/%Y'
+              ->(v) { d,m,y = v.split('/'); "#{y}#{m}#{d}" }
+
+            when '%m-%d-%Y'
+              ->(v) { m,d,y = v.split('-'); "#{y}#{m}#{d}" }
+            when '%m/%d/%Y'
+              ->(v) { m,d,y = v.split('/'); "#{y}#{m}#{d}" }
+            when '%m:%d:%Y'
+              ->(v) { m,d,y = v.split('/'); "#{y}#{m}#{d}" }
+
+            else
+              ->(v) { ::Date.parse(v, @format).yyyymmdd }
+        end
+
+        def value_from_s(value)
+          @value_proc.call(value)
+        end
+
+        def value_to_s(value)
+          value
+        end
+
+      end
+
       class Time < Base
         attr_reader :format
 
@@ -271,6 +327,63 @@ module CX
           m = (t / 60).truncate
           s = t - m * 60
           sprintf(format, h, m, s)
+        end
+      end
+
+      class Hhmmss < Base
+        # NB - this treats time as the second in the day, not Ruby Time
+        # Supported input string formats are:
+        #   '%H%M%S'
+        #   '%H:%M%:%S', %H-%M%-%S', '%H/%M%/%S'
+        #   '%h:%m%:%s', '%h-%m%-%s', '%h/%m%/%s'
+        def initialize(sym: nil, name: nil, format: '%H:%M:%S', quote: nil)
+          super(sym: sym, name: name, quote: quote)
+          @format = format
+          @value_proc = case @format
+
+            when '%H%M%S'
+              ->(v) { v }
+            when '%H:%M%:%S'
+              ->(v) { v.gsub(/:/, '') }
+            when '%H-%M%-%S'
+              ->(v) { v.gsub(/-/, '') }
+            when '%H/%M%/%S'
+              ->(v) { v.gsub(/\//, '') }
+
+            when '%h:%m%:%s'
+              ->(v) { hhmmss(v, ':') }
+            when '%h-%m%-%s'
+              ->(v) { hhmmss(v, '-') }
+            when '%h/%m%/%s'
+              ->(v) { hhmmss(v, '/') }
+
+            else
+              raise ArgumentError, "unsupported format '#{format}'"
+          end
+
+        end
+
+        attr_reader :format
+
+        # returns integer storing time (of day) as the number of seconds since midnight
+        def value_from_s(value)
+          @value_proc.call(value)
+        end
+        end
+
+        def value_to_s(value)
+          value
+        end
+
+        private
+
+        def hhmmss(hms, sep)
+          h, m, s = hms.split(sep)
+          "#{pad(h)}#{pad(m)}#{pad(s)}"
+        end
+
+        def pad(s)
+          s.size == 2 ? s : "0#{s}"
         end
       end
 
