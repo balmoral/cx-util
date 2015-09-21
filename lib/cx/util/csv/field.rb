@@ -261,6 +261,7 @@ module CX
 
             else
               ->(v) { ::Date.parse(v, @format).yyyymmdd }
+          end
         end
 
         def value_from_s(value)
@@ -360,7 +361,6 @@ module CX
             else
               raise ArgumentError, "unsupported format '#{format}'"
           end
-
         end
 
         attr_reader :format
@@ -368,7 +368,6 @@ module CX
         # returns integer storing time (of day) as the number of seconds since midnight
         def value_from_s(value)
           @value_proc.call(value)
-        end
         end
 
         def value_to_s(value)
