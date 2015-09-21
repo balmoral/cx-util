@@ -236,31 +236,36 @@ module CX
             when '%m%d%Y'
               ->(v) { "#{v[4,4]}#{v[0,2]}#{v[2,2]}" }
 
-            when '%Y-%m-%d'
-              ->(v) { v.gsub(/-/,'') }
-            when '%Y/%m/%d'
-              ->(v) { v.gsub(/\//,'') }
-            when '%Y:%m:%d'
-              ->(v) { v.gsub(/:/,'') }
+            when '%y%m%d'
+              ->(v) { "#{ypad(v[0,2])}#{v[2,2]}#{v[0,2]}" }
+            when '%d%m%y'
+              ->(v) { "#{ypad(v[4,2])}#{v[2,2]}#{v[0,2]}" }
+            when '%m%d%y'
+              ->(v) { "#{ypad(v[4,2])}#{v[0,2]}#{v[2,2]}" }
 
-            when '%d-%m-%Y'
-              ->(v) { d,m,y = v.split('-'); "#{y}#{m}#{d}" }
-            when '%d/%m/%Y'
-              ->(v) { d,m,y = v.split('/'); "#{y}#{m}#{d}" }
-            when '%d:%m:%Y'
-              ->(v) { d,m,y = v.split(':'); "#{y}#{m}#{d}" }
-            when '%d/%m/%Y'
-              ->(v) { d,m,y = v.split('/'); "#{y}#{m}#{d}" }
+            when '%Y-%m-%d', '%y-%m-%d'
+              ->(v) { ymd(v, '-') }
+            when '%Y/%m/%d', '%y/%m/%d'
+              ->(v) { ymd(v, '/') }
+            when '%Y:%m:%d', '%y:%m:%d'
+              ->(v) { ymd(v, ':') }
 
-            when '%m-%d-%Y'
-              ->(v) { m,d,y = v.split('-'); "#{y}#{m}#{d}" }
-            when '%m/%d/%Y'
-              ->(v) { m,d,y = v.split('/'); "#{y}#{m}#{d}" }
-            when '%m:%d:%Y'
-              ->(v) { m,d,y = v.split('/'); "#{y}#{m}#{d}" }
+            when '%d-%m-%Y', '%d-%m-%y'
+              ->(v) { dmy(v, '-') }
+            when '%d/%m/%Y', '%d/%m/%Y'
+              ->(v) { dmy(v, '/') }
+            when '%d:%m:%Y', '%d:%m:%y'
+              ->(v) { dmy(v, ':') }
+
+            when '%m-%d-%Y', '%m-%d-%y'
+              ->(v) { mdy(v, '-') }
+            when '%m/%d/%Y', '%m/%d/%Y'
+              ->(v) { mdy(v, '/') }
+            when '%m:%d:%Y', '%m:%d:%y'
+              ->(v) { mdy(v, ':') }
 
             else
-              ->(v) { ::Date.parse(v, @format).yyyymmdd }
+             raise MissingCase, "unsupported yyyymmdd format '#{@format}'"
           end
         end
 
@@ -270,6 +275,37 @@ module CX
 
         def value_to_s(value)
           value
+        end
+
+        private
+
+        def ymd(ymd, sep)
+          y, m, d = ymd.split(sep)
+          "#{ypad(y)}#{pad2(m)}#{pad2(d)}"
+        end
+
+        def mdy(mdy, sep)
+          m, d, y = mdy.split(sep)
+          "#{ypad(y)}#{pad2(m)}#{pad2(d)}"
+        end
+
+        def dmy(dmy, sep)
+          d, m, y = dmy.split(sep)
+          "#{ypad(y)}#{pad2(m)}#{pad2(d)}"
+        end
+
+        def ypad(s)
+          case s.size
+            when 1 then "200#{s}"
+            when 2 then s < '50' ? "19#{s}" : "20#{s}"
+            when 4 then s
+            else
+              raise MissingCase, "unexpected value for year '#{s}'"
+          end
+        end
+
+        def pad2(s)
+          s.size == 2 ? s : "0#{s}"
         end
 
       end
@@ -359,7 +395,7 @@ module CX
               ->(v) { hhmmss(v, '/') }
 
             else
-              raise ArgumentError, "unsupported format '#{format}'"
+              raise MissingCase, "unsupported hhmmss format '#{format}'"
           end
         end
 
