@@ -371,8 +371,8 @@ module CX
         # NB - this treats time as the second in the day, not Ruby Time
         # Supported input string formats are:
         #   '%H%M%S'
-        #   '%H:%M%:%S', %H-%M%-%S', '%H/%M%/%S'
-        #   '%h:%m%:%s', '%h-%m%-%s', '%h/%m%/%s'
+        #   '%H:%M:%S', %H-%M-%S', '%H/%M/%S'
+        #   '%h:%m:%s', '%h-%m-%s', '%h/%m/%s'
         def initialize(sym: nil, name: nil, format: '%H:%M:%S', quote: nil)
           super(sym: sym, name: name, quote: quote)
           @format = format
