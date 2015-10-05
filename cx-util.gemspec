@@ -19,5 +19,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency(%q<tzinfo>)
-  spec.add_dependency(%q<cx-core>)
+  spec.add_dependency 'cx-core', '~> 1.0'
 end

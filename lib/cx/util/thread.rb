@@ -26,11 +26,11 @@ class Object
   # Evaluate the given block with sync lock on self.
   # Same as but simpler than synchronized(object)
   # especially when calling from self.
-  def sync
+  def thread_sync
     mutex.synchronize { yield }
   end
 
-  def no_sync
+  def no_thread_sync
     yield
   end
 
