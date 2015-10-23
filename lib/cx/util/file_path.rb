@@ -1,5 +1,3 @@
-# require 'cx/util/thread'
-
 module CX
   class FilePath
 
