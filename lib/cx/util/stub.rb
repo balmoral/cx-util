@@ -4,7 +4,7 @@ module CX
 
   class Stub
     # When class is defined such as
-    #   class MyStub
+    #   class MyStub < Stub
     #     field: name
     #     ...
     #   end
