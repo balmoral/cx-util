@@ -18,6 +18,6 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency(%q<tzinfo>)
+  spec.add_dependency('tzinfo')
   spec.add_dependency 'cx-core', '~> 1.0'
 end
