@@ -160,7 +160,7 @@ module CX
       # map (if given) should map from the field sym's
       # in this spec to the field name in the stub.
       def self.stubs_from_rows(rows, stub: nil, map: nil)
-        puts "#{name}###{__method__}(rows.size = #{rows.size})"
+        # puts "#{name}###{__method__}(rows.size = #{rows.size})"
         result = []
         stub_class = stub || self.stub_class
         attrs = stub_attributes(map: map)
