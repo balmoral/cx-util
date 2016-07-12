@@ -16,6 +16,8 @@ module CX
     # For non-array enumerables a counter will be used as
     # surrogate for array indexing.
     def initialize(enum, first_index: nil, final_index: nil, sample: false, &select_block)
+      first_index ||= 0
+      final_index ||= enum.size
       @sample = sample
       @count = 0
       @sum = 0.0
