@@ -11,7 +11,7 @@ module CX
     # A convenience instance of Random.
     # You can create others as required.
     def self.instance
-      @instance ||= new Time.now
+      @instance ||= new Time.now.to_i
     end
 
     # A seed may be provided to allow determined sequence of random numbers.
