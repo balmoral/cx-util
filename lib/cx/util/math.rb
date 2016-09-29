@@ -1,6 +1,7 @@
 require 'cx/core'
-require 'bigdecimal/util'
-require 'bigdecimal'
+# :TODO option for using BigDecimal
+# require 'bigdecimal/util'
+# require 'bigdecimal'
 
 class Numeric
   # Returns string representation of number to given precision.
@@ -72,7 +73,8 @@ module CX
       if years <= 0
         0
       elsif initial_value == 0
-        BigDecimal::INFINITY
+        # BigDecimal::INFINITY
+        Float::INFINITY
       else
         100.to_d * if final_value < 0  # fudge if final value is less than zero
           (((initial_value.to_d - final_value.to_d) / initial_value.to_d) ** (1 / years.to_d)) * -1
