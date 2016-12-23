@@ -1,7 +1,6 @@
 
 
 module CX
-
   class Stub
     # When class is defined such as
     #   class MyStub < Stub
@@ -10,7 +9,7 @@ module CX
     #   end
     #
     # TODO: opts not used for now...
-    def self.field(_field_name, opts = {})
+    def self.field(_field_name, **_opts)
       # puts "#{self.class.name}##{__method__}(#{_name})"
       field_name = _field_name.to_sym
       unless fields.include?(field_name)
