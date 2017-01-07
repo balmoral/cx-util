@@ -55,11 +55,35 @@ module CX
       @enums ||= {}
     end
 
-    def self.enum(name, value = nil)
+    # Must be called in subclass before its enums are declared.
+    def self.constantize_ordinal
+      @constantizer = :ordinal
+    end
+    def self.constantize_name
+      @constantizer = :name
+    end
+    def self.constantize_value
+      @constantizer = :value
+    end
+    def self.constantize_enum
+      @constantizer = :enum
+    end
+
+    def self.constantizer
+      @constantizer
+    end
+
+    def self.constantize?
+      !!@constantizer
+    end
+
+    def self.enum(name, value: nil, ordinal: nil)
       if enums[name]
         fail "#{__FILE__}[#{__LINE__}:#{self.class.name}##enum(#{name}, #{value}) : enum already defined"
       end
-      enums[name] = new(name, value, enums.size)
+      ordinal ||= enums.empty? ? 0 : enums.values.last.ordinal + 1
+      enums[name] = enum = new(name, value, ordinal)
+      create_constant(enum) if constantize?
     end
 
     # Returns instance of Enum with given name
@@ -103,13 +127,18 @@ module CX
       defined?(name)
     end
 
-    # Create class constants for each enum name/value pair.
-    # Should generally be called once after all enum values
-    # have been declared.
-    def self.constantize
-      enums.each do |name, value|
-        const_set(name.to_sym, value)
+    def self.create_constant(enum)
+      const_value = case @constantizer
+        when :ordinal
+          enum.ordinal
+        when :name
+          enum.name.to_s
+        when :value
+          enum.value || enum.ordinal
+        when :enum, nil
+          enum
       end
+      const_set(enum.name.to_s, const_value) if const_value
     end
 
     attr_reader :name, :value, :ordinal

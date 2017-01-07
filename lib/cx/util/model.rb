@@ -11,33 +11,31 @@
 module CX
   class Model
 
-    def self.attr(*attrs)
-      # puts "#{self.class.name}##{__method__}(#{_name})"
-      attrs.each do |_attr|
-        attr = _attr.to_sym
+    def self.attr(*args)
+      # puts "#{self.class.name}##{__method__}(#{args})"
+      args.each do |attr|
+        attr = attr.to_sym
         unless attrs.include?(attr)
           attrs << attr
           # reader
           define_method(attr) do
-            stub_get(attr)
+            @hash[attr]
           end
           # writer
           define_method("#{attr}=".to_sym) do |value|
-            stub_set(attr, value)
+            @hash[attr] = value
           end
         end
       end
     end
 
-    def self.subclass(attr_names, parent: nil)
-      sub = Class.new(parent || self)
-      sub.attrs(attr_names)
-      sub
+    # lazy initialize - pull in superclass attrs if relevant
+    def self.attrs
+      @attrs ||= self < CX::Model ? superclass.attrs.dup : []
     end
 
-    # lazy initialize
-    def self.attrs
-      @attrs ||= [] + (superclass.respond_to?(:attrs) ? superclass.attrs : [])
+    def self.attr?(name)
+      attrs.include?(name)
     end
 
     def self.csv_head
@@ -68,17 +66,29 @@ module CX
     def after_initialize
     end
 
+    def attr?(name)
+      self.class.attr?(name)
+    end
+
+    def ==(other)
+      return false unless self.class == other.class
+      @hash.each do |attr, value|
+        return false unless value == other[attr]
+      end
+      true
+    end
+
     def [](attr)
       @hash[attr.to_sym]
     end
-
 
     def []=(attr, val)
       @hash[attr.to_sym] = val
     end
 
-    alias_method :stub_get, :[]
-    alias_method :stub_set, :[]=
+    def values(*attr_names)
+      attr_names.map { |n| self[n] }
+    end
 
     def to_csv
       @hash.values.join(',')
