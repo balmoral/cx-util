@@ -11,7 +11,13 @@
 module CX
   class Model
 
+    # DSL method
     def self.attr(*args)
+      self.attrs = args
+    end
+
+    # adds arg attributes, does not clear
+    def self.attrs=(args)
       # puts "#{self.class.name}##{__method__}(#{args})"
       args.each do |attr|
         attr = attr.to_sym

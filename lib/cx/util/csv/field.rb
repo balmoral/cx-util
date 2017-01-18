@@ -1,3 +1,4 @@
+require 'scanf'
 require 'bigdecimal'
 require 'cx/core/constants'
 require 'cx/core/date'
@@ -252,14 +253,14 @@ module CX
 
             when '%d-%m-%Y', '%d-%m-%y'
               ->(v) { dmy(v, '-') }
-            when '%d/%m/%Y', '%d/%m/%Y'
+            when '%d/%m/%Y', '%d/%m/%y'
               ->(v) { dmy(v, '/') }
             when '%d:%m:%Y', '%d:%m:%y'
               ->(v) { dmy(v, ':') }
 
             when '%m-%d-%Y', '%m-%d-%y'
               ->(v) { mdy(v, '-') }
-            when '%m/%d/%Y', '%m/%d/%Y'
+            when '%m/%d/%Y', '%m/%d/%y'
               ->(v) { mdy(v, '/') }
             when '%m:%d:%Y', '%m:%d:%y'
               ->(v) { mdy(v, ':') }
