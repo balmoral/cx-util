@@ -62,8 +62,11 @@ module CX
     def initialize(**args)
       @hash = {}
       if args && args.size > 0
-        attrs.each do |f|
-          @hash[f] = args[f]
+        args.each do |key, value|
+          unless self.class.attr?(key)
+            raise RuntimeError, "#{__FILE__}##{__LINE__} : ##{key} is not an attribute of #{self.class.name}"
+          end
+          @hash[key] = value
         end
       end
       after_initialize

@@ -21,7 +21,7 @@ end
 task :commit do
   begin
     sh 'git add -A'
-    sh 'git commit -m "initial commit"'
+    sh 'git commit -m "added unicode.rb"'
   rescue Exception => x
     puts x.message
   end
