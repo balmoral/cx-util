@@ -10,9 +10,7 @@ module CX
       @tag, @value = tag, value
     end
 
-    def key
-      @tag
-    end
+    alias_method :key, :tag
 
     def to_s
       "#{tag}:#{value}"
