@@ -18,11 +18,14 @@ module CX
       self
     end
 
-    def time
+    # Returns the time it takes to execute
+    # the given block as an easily readable
+    # string.
+    def time(&block)
       start
-      yield
+      block.call
       finish
-      self
+      to_s
     end
 
     def seconds
@@ -52,6 +55,10 @@ module CX
 
     def self.time(&block)
       new &block
+    end
+
+    def self.call(&block)
+      time(&block)
     end
   end
 end
