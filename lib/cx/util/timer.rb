@@ -53,11 +53,15 @@ module CX
       end
     end
 
+    # Returns the time it takes to execute
+    # the given block as an easily readable
+    # string.
     def self.time(&block)
-      new &block
+      t = new &block
+      t.to_s
     end
 
-    def self.call(&block)
+    def self.run(&block)
       time(&block)
     end
   end
