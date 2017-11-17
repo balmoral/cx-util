@@ -57,7 +57,7 @@ module CX
     # the given block as an easily readable
     # string.
     def self.time(&block)
-      t = new &block
+      t = new(&block)
       t.to_s
     end
 
