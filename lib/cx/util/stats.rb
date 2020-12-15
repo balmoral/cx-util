@@ -3,10 +3,32 @@ module CX
   class Stats
     include Math
 
-    attr_reader :sum, :min, :max, :count, :ave, :var, :dev
+    def self.pearson_correlation_coefficient(x, y)
+      fail 'series must be same size' unless x.size == y.size
+      xs = new(x)
+      ys = new(y)
+      numerator = 0
+      x.size.times do |i|
+        numerator += (x[i] - xs.ave) * (y[i] - ys.ave)
+      end
+      denominator = (xs.var * xs.n * ys.var * ys.n).sqrt
+      numerator / denominator
+    end
+
+    attr_reader :count
+    attr_reader :sum, :min, :max
+    attr_reader :ave, :var, :dev
     attr_reader :dev_pos, :dev_neg
     attr_reader :var_pos, :var_neg
     attr_reader :n_pos, :n_neg
+    attr_reader :n # equal to (count - 1) if sample is true, else equal to count
+
+    alias sd dev
+    alias sd_pos dev_pos
+    alias sd_neg dev_neg
+    alias sdev dev
+    alias pos_count n_pos
+    alias neg_count n_neg
 
     # Will create an instance of stats from an enumerable.
     # If a select_block is given, this will be called
@@ -34,6 +56,14 @@ module CX
       @dev_neg = sqrt(@var_neg)
     end
 
+    def to_h
+      {}.tap { |result|
+        %i[count sum min max ave var dev].each do |e|
+          result[e] = send(e)
+        end
+      }
+    end
+
     def sample?
       @sample
     end
@@ -42,15 +72,13 @@ module CX
       !@sample
     end
 
-    alias sd dev
-    alias sd_pos dev_pos
-    alias sd_neg dev_neg
-    alias sdev dev
-    alias pos_count n_pos
-    alias neg_count n_neg
-
     def annual_ror(years)
       Math::annual_ror(0, @sum, years)
+    end
+
+    # Returns the number of standard deviations of the given value
+    def n_devs(value)
+      (value - ave).abs / dev
     end
 
     private
@@ -82,10 +110,10 @@ module CX
     def calc_var(enum, first_index, final_index, &select_block)
       if @count > 1
         iterate(enum, first_index, final_index, :process_var, &select_block)
-        n = (@count - (@sample ? 1 : 0)).to_f
-        @var /= n
-        @var_pos /= n # @n_pos.to_f if @n_pos != 0
-        @var_neg /= n # @n_neg.to_f if @n_neg != 0
+        @n = (@count - (@sample ? 1 : 0)).to_f
+        @var /= @n
+        @var_pos /= @n # @n_pos.to_f if @n_pos != 0
+        @var_neg /= @n # @n_neg.to_f if @n_neg != 0
       end
     end
 

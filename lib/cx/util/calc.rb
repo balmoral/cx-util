@@ -6,6 +6,7 @@ module CX
       y = block_given?
       enum.inject(0) {|r,e| r + (y ? yield(e) : e) }
     end
+    
     def ave(enum)
       c = count(enum)
       c == 0 ? nil : sum(enum).to_f / c.to_f

@@ -128,12 +128,12 @@ class Array
   # Returns an element of the array chosen by
   # tournament selection using given block.
   def tournament_select(tournament_size: 1, &block)
-    CX::Util::Random.instance.tournament_select(self, tournament_size: tournament_size, &block)
+    CX::Random.instance.tournament_select(self, tournament_size: tournament_size, &block)
   end
 
   # Returns randomly chosen element of array.
   def random_choice
-    CX::Util::Random.instance.choice(self)
+    CX::Random.instance.choice(self)
   end
 
   # A lucky dip is a random choice or vice versa.
@@ -141,6 +141,6 @@ class Array
 
   # Returns randomly chosen element of collection or nil.
   def random_choice_or_nil
-    CX::Util::Random.instance.choice_or_nil(self)
+    CX::Random.instance.choice_or_nil(self)
   end
 end

@@ -20,6 +20,7 @@ end
 
 module CX
   module Math
+
     #
     # Methods to handle basic math ops with possible nil values
     #
